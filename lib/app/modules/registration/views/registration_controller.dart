@@ -1,11 +1,21 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
 class RegistrationController extends GetxController {
-  // Your controller code here
 
-  void registerUser(String username, String email, String password) {
-    // Add your registration logic here
-    // Use the provided username, email, and password arguments
-    print('Username: $username, Email: $email, Password: $password');
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> registerUser(String email, String password) async {
+    try {
+      await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password  
+      );
+      print("User registered successfully");
+    
+    } on FirebaseAuthException catch (e) {
+      print("Registration error: $e");
+    }
   }
+
 }
