@@ -1,25 +1,27 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../routes/app_pages.dart'; 
+import '../../../routes/app_pages.dart';
 
 class LoginController extends GetxController {
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  void login() {
-    String email = emailController.text;
-    String password = passwordController.text;
+  void login() async {
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
 
-
-    const String validEmail = 'user@example.com';
-    const String validPassword = 'password';
-
-    if (email == validEmail && password == validPassword) {
-      // Login successful
+    try {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      
       Get.snackbar('Login', 'Login successful!');
-      Get.offNamed(Routes.HOME); 
-    } else {
-      Get.snackbar('Login', 'Invalid email or password!', snackPosition: SnackPosition.BOTTOM);
+      Get.offNamed(Routes.HOME);
+
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar('Login Failed', e.message!, snackPosition: SnackPosition.BOTTOM); 
     }
   }
 
